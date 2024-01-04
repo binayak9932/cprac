@@ -3,85 +3,65 @@
 
 int main() {
   int r1, c1, r2, c2, i, j, k;
-
-  // Input rows and columns of first matrix
-  printf("Enter rows and columns of first matrix: ");
+  
+  // Input matrix 1 rows and columns
+  printf("Enter rows and columns for matrix 1: ");
   scanf("%d %d", &r1, &c1);
 
-  // Input rows and columns of second matrix 
-  printf("Enter rows and columns of second matrix: ");
+  // Input matrix 2 rows and columns 
+  printf("Enter rows and columns for matrix 2: ");
   scanf("%d %d",&r2, &c2);
 
   // Check if matrices can be multiplied
   if(c1 != r2) {
-    printf("Matrices cannot be multiplied\n");
-    exit(0);
+    printf("Cannot multiply matrices.\n"); 
+    exit(0);  
   }
 
-  // Dynamically allocate memory for matrices
-  int** matrix1 = (int**)malloc(r1 * sizeof(int*));
-  for(i=0; i<r1; i++)
-    matrix1[i] = (int*)malloc(c1 * sizeof(int)); 
+  // Allocate memory 
+  int *matrix1 = (int *)malloc(r1 * c1 * sizeof(int));
+  int *matrix2 = (int *)malloc(r2 * c2 * sizeof(int));
+  int *result = (int *)malloc(r1 * c2 * sizeof(int));
 
-  int** matrix2 = (int**)malloc(r2 * sizeof(int*));
-  for(i=0; i<r2; i++)
-     matrix2[i] = (int*)malloc(c2 * sizeof(int));
-
-  // Input elements of first matrix 
-  printf("\nEnter elements of first matrix:\n");
+  // Read matrix 1  
+  printf("\nEnter elements of matrix 1:\n");
   for(i=0; i<r1; i++) {
-    for(j=0; j<c1; j++) {
-      scanf("%d", &matrix1[i][j]);
+    for(j=0; j<c1; j++) {    
+      scanf("%d", (matrix1 + i*c1 + j));
     }
   }
-
-  // Input elements of second matrix
-  printf("\nEnter elements of second matrix:\n");
+  
+  // Read matrix 2
+  printf("\nEnter elements of matrix 2:\n");
   for(i=0; i<r2; i++) {
-    for(j=0; j<c2; j++) {
-      scanf("%d", &matrix2[i][j]);
+    for(j=0; j<c2; j++) {  
+      scanf("%d", (matrix2 + i*c2 + j));
     }
   }
 
-  // Initialize result matrix
-  int** result = (int**)malloc(r1 * sizeof(int*)); 
-  for(i=0; i<r1; i++)
-    result[i] = (int*)malloc(c2 * sizeof(int));
-
-  // Perform matrix multiplication
+  // Matrix multiplication
   for(i=0; i<r1; i++) {
     for(j=0; j<c2; j++) {
-      result[i][j] = 0;
+      *(result + i*c2 + j) = 0; 
       for(k=0; k<c1; k++) {
-        result[i][j] += matrix1[i][k] * matrix2[k][j];
+        *(result + i*c2 + j) += *(matrix1 + i*c1 + k) * *(matrix2 + k*c2 + j);
       }
     }
   }
 
-  // Print result matrix
-  printf("\nResult matrix: \n");
-  for(i=0; i<r1; i++) {
+  // Print result
+  printf("\nResult Matrix:\n"); 
+  for(i=0; i<r1; i++){
     for(j=0; j<c2; j++){
-      printf("%d ", result[i][j]);
+      printf("%d ", *(result + i*c2 + j)); 
     }
     printf("\n");
   }
 
-  // Free memory
-  for(i=0; i<r1; i++) {
-    free(matrix1[i]);
-  }
+  // Free memory  
   free(matrix1);
-
-  for(i=0; i<r2; i++) {
-    free(matrix2[i]);
-  }
   free(matrix2);
-
-  for(i=0; i<r1; i++) {
-    free(result[i]);
-  }
-  free(result);
+  free(result);  
 
   return 0;
 }
